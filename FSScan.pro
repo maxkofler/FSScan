@@ -1,10 +1,11 @@
 TEMPLATE = app
-CONFIG += console c++11
+CONFIG += c++17
 CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
         indexer/indexer.cpp \
+        indexer/indexerio.cpp \
         log/log.cpp \
         log/logfunction.cpp \
         main.cpp
