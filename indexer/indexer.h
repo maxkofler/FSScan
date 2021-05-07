@@ -25,7 +25,7 @@ public:
 
     std::vector<std::string>    find(std::string name);
 
-    void                        clean();
+    void                        clear();
 
 
 private:

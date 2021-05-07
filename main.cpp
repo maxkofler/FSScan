@@ -7,61 +7,87 @@
 
 Log* hlog;
 
-int main(int argc, char** argv)
+Indexer indexer;
+
+bool switchCommand(std::string com);
+
+int main()
 {
-    hlog = new Log(Log::F);
+    hlog = new Log(Log::U, false);
     FUN();
 
-    std::string path = "/home";
-    std::string indexFile = "out.txt";
-    std::string keyword = "home";
-
-    if (argc == 2){
-        indexFile = std::string(argv[1]);
-    }
-    else if (argc == 3){
-        path = std::string(argv[1]);
-        keyword = std::string(argv[2]);
-    }
-
-    Indexer indexer;
-
-    LOGI("Loading from file...");
-
-    {
-        std::ifstream inFile;
-        inFile.open(indexFile);
-        if (inFile.is_open())
-            indexer.loadPaths(inFile, true);
-        inFile.close();
-    }
-
-    LOGI("Indexing recursively from \"" + path + "\"...");
-
-    indexer.indexDirRecursive(path, true);
-
-    LOGI("Done");
-
-    LOGI("RAM containing " + std::to_string(indexer.getByteSize()) + " bytes of paths");
-
-    LOGI("Saving to file \"" + indexFile + "\"...");
-
-    std::ofstream outFile;
-    outFile.open(indexFile);
-
-    LOGI("Written " + std::to_string(indexer.getPaths(outFile)) + " files and directories!");
-
-    auto results = indexer.find(keyword);
-    std::cout << "Found paths:" << std::endl;
-    if (results.size() > 0){
-        for (auto& i : results){
-            std::cout << i << std::endl;
+    bool run = true;
+    std::string curCom;
+    while(run){
+        std::cout << ">>";
+        std::cin >> curCom;
+        if (curCom == "exit" || curCom == "q"){
+            run = false;
+            LOGU("Exiting...");
+            continue;
         }
-    }else{
-        std::cout << "none" << std::endl;
+        if (!switchCommand(curCom)){
+            LOGUE("Could not find command " + curCom);
+        }
+    }
+    return 0;
+}
+
+
+bool switchCommand(std::string com){
+    FUN();
+    using namespace std;
+    std::string buf;
+    if (com == "scan"){
+        //cout << "Enter path to scan: ";
+        cin >> buf;
+        LOGU("Scanning " + buf + "...");
+        size_t i = indexer.indexDirRecursive(buf, false);
+        {
+            string l = "Done scanning " + buf + ": " + std::to_string(i);
+            l += " files (" + std::to_string(indexer.getByteSize()) + " bytes) indexed!";
+            LOGU(l);
+        }
+        return true;
     }
 
-    outFile.close();
+    else if (com == "clear"){
+        indexer.clear();
+        LOGU("Cleared all entries from workspace!");
+        return true;
+    }
 
-    return 0;
+    else if (com == "save"){
+        size_t s = 0;
+        //cout << "Enter file to save indexes: ";
+        cin >> buf;
+        ofstream f;
+        f.open(buf);
+        if (f.is_open()){
+            s = indexer.getPaths(f);
+        }else
+            LOGUE("Can't open file " + buf);
+        f.close();
+        LOGU(   "Saved " + std::to_string(s) + " indexes(" +
+                std::to_string(indexer.getByteSize()) + " bytes) to " + buf + "!");
+        return true;
+    }
+
+    else if (com == "load"){
+        size_t s = 0;
+        //cout << "Enter file to load indexes from: ";
+        cin >> buf;
+        ifstream f;
+        f.open(buf);
+        if (f.is_open()){
+            s = indexer.loadPaths(f, false);
+        }else
+            LOGUE("Can't open file!");
+        f.close();
+        LOGU(   "Loaded " + std::to_string(s) + " indexes(" +
+                std::to_string(indexer.getByteSize()) + " bytes) from " + buf + "!");
+        return true;
+    }
+
+    return false;
 }

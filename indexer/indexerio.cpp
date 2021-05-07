@@ -1,6 +1,7 @@
 #include "indexer.h"
 
 size_t Indexer::getPaths(std::ostream &stream){
+    FUN();
     for (size_t i = 0; i < this->_paths.size(); i++){
         stream << this->_names.at(i) << "/" << this->_paths.at(i) << std::endl;
     }
@@ -8,9 +9,9 @@ size_t Indexer::getPaths(std::ostream &stream){
 }
 
 size_t Indexer::loadPaths(std::istream &stream, bool delete_results){
-
+    FUN();
     if (delete_results)
-        this->clean();
+        this->clear();
 
     std::string     curLine;
     std::string     curName;
@@ -35,7 +36,8 @@ size_t Indexer::loadPaths(std::istream &stream, bool delete_results){
     return this->_names.size();
 }
 
-void Indexer::clean(){
+void Indexer::clear(){
+    FUN();
     this->_names.clear();
     this->_paths.clear();
 }
