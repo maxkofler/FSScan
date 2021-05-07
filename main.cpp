@@ -57,6 +57,11 @@ bool switchCommand(std::string com){
         return true;
     }
 
+    else if (com == "clean"){
+        size_t i = indexer.clean();
+        LOGU("Cleaned up " + to_string(i) + " duplicates!");
+    }
+
     else if (com == "save"){
         size_t s = 0;
         //cout << "Enter file to save indexes: ";
@@ -64,11 +69,11 @@ bool switchCommand(std::string com){
         ofstream f;
         f.open(buf);
         if (f.is_open()){
-            s = indexer.getPaths(f);
+            s = indexer.savePaths(f);
         }else
             LOGUE("Can't open file " + buf);
         f.close();
-        LOGU(   "Saved " + std::to_string(s) + " indexes(" +
+        LOGU(   "Saved " + std::to_string(s) + " indexes (" +
                 std::to_string(indexer.getByteSize()) + " bytes) to " + buf + "!");
         return true;
     }
@@ -84,8 +89,14 @@ bool switchCommand(std::string com){
         }else
             LOGUE("Can't open file!");
         f.close();
-        LOGU(   "Loaded " + std::to_string(s) + " indexes(" +
+        LOGU(   "Loaded " + std::to_string(s) + " indexes (" +
                 std::to_string(indexer.getByteSize()) + " bytes) from " + buf + "!");
+        return true;
+    }
+
+    else if (com == "stat"){
+        LOGU(   "Workspace holding " + std::to_string(indexer.getSize()) + " indexes (" +
+                std::to_string(indexer.getByteSize()) + " bytes)!");
         return true;
     }
 

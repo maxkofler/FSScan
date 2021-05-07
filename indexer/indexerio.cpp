@@ -1,6 +1,6 @@
 #include "indexer.h"
 
-size_t Indexer::getPaths(std::ostream &stream){
+size_t Indexer::savePaths(std::ostream &stream){
     FUN();
     for (size_t i = 0; i < this->_paths.size(); i++){
         stream << this->_names.at(i) << "/" << this->_paths.at(i) << std::endl;
@@ -40,4 +40,27 @@ void Indexer::clear(){
     FUN();
     this->_names.clear();
     this->_paths.clear();
+}
+
+size_t Indexer::clean(){
+    FUN();
+    using namespace std;
+    size_t ret = 0;
+    std::string curPath;
+    LOGSP(Log::U);
+    for (size_t i = 0; i < this->_paths.size(); i++){
+        curPath = this->_paths.at(i);
+        for (size_t n = i+1; n < this->_paths.size(); n++){
+            if (curPath == this->_paths.at(n)){
+                this->_paths.erase(this->_paths.begin() + n);
+                this->_names.erase(this->_names.begin() + n);
+                ret++;
+                n--;
+            }
+            LOGPP("Checking entry " + to_string(n+1) + "/" + to_string(i+1) + ", duplicates: " + to_string(ret), Log::U);
+        }
+    }
+    LOGEP(Log::U);
+
+    return ret;
 }

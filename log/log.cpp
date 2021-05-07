@@ -32,7 +32,7 @@ void Log::logw(std::string text, uint level){
     }
 }
 
-void Log::flush(){
+inline void Log::flush(){
     std::cout.flush();
 }
 
