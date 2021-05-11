@@ -27,7 +27,7 @@ size_t Indexer::indexDirRecursive(std::string path, bool delete_old_results){
         std::error_code err;
         //recursive_directory_iterator file;
         try {
-            if (it->exists() && it->is_regular_file()){
+            if (it->exists()){
                 fPath = std::filesystem::canonical(*it);
                 sfPath = fPath.string();
                 sfPath.shrink_to_fit();

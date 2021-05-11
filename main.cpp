@@ -101,10 +101,10 @@ bool switchCommand(std::string com){
         return true;
     }
 
-    else if (com == "find"){
+    else if (com == "findc"){
         cin >> buf;
 
-        LOGU("Searching for \"" + buf + "\"...");
+        LOGU("Searching for entries containing \"" + buf + "\"...");
 
         auto res = indexer.findByName(buf);
 
@@ -125,16 +125,16 @@ bool switchCommand(std::string com){
         return true;
     }
 
-    else if (com == "finde"){
+    else if (com == "find"){
         cin >> buf;
 
-        LOGU("Searching for \"" + buf + "\" with exact name match...");
+        LOGU("Searching for \"" + buf + "\"");
 
         auto res = indexer.findByExactName(buf);
 
         //Check for found entries
         if (res.size() <= 0){
-            LOGUE("Could not find any entries containing \"" + buf + "\"!");
+            LOGUE("Could not find any entries matching \"" + buf + "\"!");
             return true;
         }
 
