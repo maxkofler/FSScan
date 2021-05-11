@@ -5,10 +5,13 @@
 
 size_t Indexer::savePaths(std::ostream &stream){
     FUN();
-    for (size_t i = 0; i < this->_paths.size(); i++){
-        stream << this->_names.at(i) << "/" << this->_paths.at(i) << std::endl;
+    LOGU("Sorting entries...");
+    std::sort(this->_entries.begin(), this->_entries.end());
+    LOGU("Saving...");
+    for (size_t i = 0; i < this->_entries.size(); i++){
+        stream << this->_entries.at(i).toStoreString() << std::endl;
     }
-    return this->_paths.size();
+    return this->_entries.size();
 }
 
 size_t Indexer::loadPaths(std::istream &stream, bool delete_results){
@@ -30,35 +33,37 @@ size_t Indexer::loadPaths(std::istream &stream, bool delete_results){
             curPath = curLine.substr(pos+1, curLine.length()-pos-1);
             curName.shrink_to_fit();
             curPath.shrink_to_fit();
-            this->_names.push_back(curName);
-            this->_paths.push_back(curPath);
+            this->_entries.push_back(FSEntry(curName, curPath));
         }
     }
 
-    LOGD("Loaded " + std::to_string(this->_names.size()) + " indexes");
-    return this->_names.size();
+    LOGD("Loaded " + std::to_string(this->_entries.size()) + " indexes");
+    LOGU("Sorting entries...");
+    std::sort(this->_entries.begin(), this->_entries.end());
+    LOGU("Done!");
+    return this->_entries.size();
 }
 
 void Indexer::clear(){
     FUN();
-    this->_names.clear();
-    this->_paths.clear();
+    this->_entries.clear();
 }
 
 template <typename Type>
 void remove_duplicate(std::vector<Type>& vec) {
-  std::sort(vec.begin(), vec.end());
-  vec.erase(unique(vec.begin(), vec.end()), vec.end());
+    FUN();
+    LOGU("Sorting...");
+    std::sort(vec.begin(), vec.end());
+    LOGU("Cleaning...");
+    vec.erase(unique(vec.begin(), vec.end()), vec.end());
+    LOGU("Done!");
 }
 
 size_t Indexer::clean(){
     FUN();
+    size_t oldSize = this->_entries.size();
 
-    size_t oldSize = this->_paths.size();
+    remove_duplicate(this->_entries);
 
-    remove_duplicate(this->_paths);
-
-    LOGU("Removed " + std::to_string(oldSize - this->_paths.size()) + " duplicates!");
-
-    return 0;
+    return oldSize - this->_entries.size();
 }

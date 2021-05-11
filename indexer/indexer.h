@@ -4,6 +4,7 @@
 class Indexer;
 
 #include "log/log.h"
+#include "fsentry/fsentry.h"
 
 #include <filesystem>
 #include <string>
@@ -22,9 +23,11 @@ public:
     size_t                      loadPaths(std::istream& stream, bool delete_results);
 
     size_t                      getByteSize();
-    size_t                      getSize(){return this->_names.size();}
+    size_t                      getSize(){return this->_entries.size();}
 
-    std::vector<std::string>    find(std::string name);
+    std::vector<FSEntry>        findByName(std::string name);
+    std::vector<FSEntry>        findByExactName(std::string name);
+
 
     /**
      * @brief   Deletes all entries and indexes in the workspace
@@ -40,8 +43,8 @@ public:
 
 
 private:
-    std::vector<std::string>    _paths;
-    std::vector<std::string>    _names;
+    std::vector<FSEntry>        _entries;
+    //std::vector<std::string>    _names;
 };
 
 #endif // INDEXER_H

@@ -60,6 +60,7 @@ bool switchCommand(std::string com){
     else if (com == "clean"){
         size_t i = indexer.clean();
         LOGU("Cleaned up " + to_string(i) + " duplicates!");
+        return true;
     }
 
     else if (com == "save"){
@@ -97,6 +98,54 @@ bool switchCommand(std::string com){
     else if (com == "stat"){
         LOGU(   "Workspace holding " + std::to_string(indexer.getSize()) + " indexes (" +
                 std::to_string(indexer.getByteSize()) + " bytes)!");
+        return true;
+    }
+
+    else if (com == "find"){
+        cin >> buf;
+
+        LOGU("Searching for \"" + buf + "\"...");
+
+        auto res = indexer.findByName(buf);
+
+        //Check for found entries
+        if (res.size() <= 0){
+            LOGUE("Could not find any entries containing \"" + buf + "\"!");
+            return true;
+        }
+
+        std::string plt = "";
+        for (auto i : res){
+            plt += i.getPath() + "\n";
+        }
+
+        LOGU("Found entries for \"" + buf + "\":");
+        LOGU(plt);
+
+        return true;
+    }
+
+    else if (com == "finde"){
+        cin >> buf;
+
+        LOGU("Searching for \"" + buf + "\" with exact name match...");
+
+        auto res = indexer.findByExactName(buf);
+
+        //Check for found entries
+        if (res.size() <= 0){
+            LOGUE("Could not find any entries containing \"" + buf + "\"!");
+            return true;
+        }
+
+        std::string plt = "";
+        for (auto i : res){
+            plt += i.getPath() + "\n";
+        }
+
+        LOGU("Found entries for \"" + buf + "\":");
+        LOGU(plt);
+
         return true;
     }
 

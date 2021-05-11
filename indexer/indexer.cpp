@@ -1,13 +1,14 @@
 #include "indexer.h"
 
+#include <algorithm>
+
 Indexer::Indexer(){
 }
 
 size_t Indexer::indexDirRecursive(std::string path, bool delete_old_results){
     FUN();
     if (delete_old_results){
-        this->_names.clear();
-        this->_paths.clear();
+        this->_entries.clear();
         LOGI("Cleared all old results!");
     }
     std::filesystem::path   fPath;
@@ -32,14 +33,13 @@ size_t Indexer::indexDirRecursive(std::string path, bool delete_old_results){
                 sfPath.shrink_to_fit();
                 sfName = fPath.filename().string();
                 sfName.shrink_to_fit();
-                if (this->_names.size() < this->_names.max_size()){
+                if (this->_entries.size() < this->_entries.max_size()){
                     //LOGI("New file: \"" + sfPath + "\"");
                     curSize++;
                     LOGPP("Scanned " + std::to_string(curSize) + " files...", Log::U);
-                    this->_paths.push_back(sfPath);
-                    this->_names.push_back(sfName);
+                    this->_entries.push_back(FSEntry(sfName, sfPath));
                 }else{
-                    LOGE("Maximum size of vector reached: " + std::to_string(this->_names.size()));
+                    LOGE("Maximum size of vector reached: " + std::to_string(this->_entries.size()));
                     break;
                 }
             }
@@ -58,29 +58,46 @@ size_t Indexer::indexDirRecursive(std::string path, bool delete_old_results){
 
     }
     LOGEP(Log::U);
-    //this->_paths.shrink_to_fit();
-    //this->_names.shrink_to_fit();
-    return this->_paths.size();
+    LOGU("Sorting entries...");
+    std::sort(this->_entries.begin(), this->_entries.end());
+    LOGU("Done!");
+    return this->_entries.size();
 }
 
 size_t Indexer::getByteSize(){
     FUN();
     size_t n = 0;
-    for(auto i : this->_paths){
-        n += i.size();
-    }
-    for(auto i : this->_names){
+    for(auto i : this->_entries){
         n += i.size();
     }
     return n;
 }
 
-std::vector<std::string> Indexer::find(std::string name){
+std::vector<FSEntry> Indexer::findByName(std::string name){
     FUN();
-    std::vector<std::string> ret;
-    for (size_t i = 0; i < this->_names.size(); i++){
-        if (this->_names.at(i).find(name) != std::string::npos){
-            ret.push_back(this->_paths.at(i));
+    std::vector<FSEntry> ret;
+
+    std::string curName;
+
+    for (size_t i = 0; i < this->_entries.size(); i++){
+        curName = this->_entries.at(i).getName();
+        if (curName.find(name) != std::string::npos){
+            ret.push_back(this->_entries.at(i));
+        }
+    }
+    return ret;
+}
+
+std::vector<FSEntry> Indexer::findByExactName(std::string name){
+    FUN();
+    std::vector<FSEntry> ret;
+
+    std::string curName;
+
+    for (size_t i = 0; i < this->_entries.size(); i++){
+        curName = this->_entries.at(i).getName();
+        if (curName == name){
+            ret.push_back(this->_entries.at(i));
         }
     }
     return ret;
