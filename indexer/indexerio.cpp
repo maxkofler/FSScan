@@ -1,5 +1,8 @@
 #include "indexer.h"
 
+#include <algorithm>
+#include <set>
+
 size_t Indexer::savePaths(std::ostream &stream){
     FUN();
     for (size_t i = 0; i < this->_paths.size(); i++){
@@ -42,25 +45,20 @@ void Indexer::clear(){
     this->_paths.clear();
 }
 
+template <typename Type>
+void remove_duplicate(std::vector<Type>& vec) {
+  std::sort(vec.begin(), vec.end());
+  vec.erase(unique(vec.begin(), vec.end()), vec.end());
+}
+
 size_t Indexer::clean(){
     FUN();
-    using namespace std;
-    size_t ret = 0;
-    std::string curPath;
-    LOGSP(Log::U);
-    for (size_t i = 0; i < this->_paths.size(); i++){
-        curPath = this->_paths.at(i);
-        for (size_t n = i+1; n < this->_paths.size(); n++){
-            if (curPath == this->_paths.at(n)){
-                this->_paths.erase(this->_paths.begin() + n);
-                this->_names.erase(this->_names.begin() + n);
-                ret++;
-                n--;
-            }
-            LOGPP("Checking entry " + to_string(n+1) + "/" + to_string(i+1) + ", duplicates: " + to_string(ret), Log::U);
-        }
-    }
-    LOGEP(Log::U);
 
-    return ret;
+    size_t oldSize = this->_paths.size();
+
+    remove_duplicate(this->_paths);
+
+    LOGU("Removed " + std::to_string(oldSize - this->_paths.size()) + " duplicates!");
+
+    return 0;
 }
