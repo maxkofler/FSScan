@@ -7,6 +7,8 @@ class UIMenu;
 #include <QMenu>
 #include <QObject>
 
+#include <QMessageBox>
+
 #include "log/log.h"
 #include "../mainwindow.h"
 
