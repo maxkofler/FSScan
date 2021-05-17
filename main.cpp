@@ -2,6 +2,9 @@
 #include "log/log.h"
 #include "indexer/indexer.h"
 
+#include "ui/mainwindow.h"
+#include <QApplication>
+
 #include <fstream>
 #include <iostream>
 
@@ -11,26 +14,54 @@ Indexer indexer;
 
 bool switchCommand(std::string com);
 
-int main()
+int main(int argc, char** argvc_str)
 {
     hlog = new Log(Log::U, false);
     FUN();
 
-    bool run = true;
-    std::string curCom;
-    while(run){
-        std::cout << ">>";
-        std::cin >> curCom;
-        if (curCom == "exit" || curCom == "q"){
-            run = false;
-            LOGU("Exiting...");
-            continue;
-        }
-        if (!switchCommand(curCom)){
-            LOGUE("Could not find command " + curCom);
+    int ret = 0;
+
+    std::string argv[argc];
+    for(int i = 0; i < argc; i++)
+        argv[i] = std::string(argvc_str[i]);
+
+    bool startcli = false;
+
+    if (argc >= 2){
+        if(argv[1] == "cli"){
+            startcli = true;
         }
     }
-    return 0;
+
+    if (startcli){
+        LOGU("Entering cli mode...");
+
+        bool run = true;
+        std::string curCom;
+        while(run){
+            std::cout << ">>";
+            std::cin >> curCom;
+            if (curCom == "exit" || curCom == "q"){
+                run = false;
+                LOGU("Exiting...");
+                continue;
+            }
+            if (!switchCommand(curCom)){
+                LOGUE("Could not find command " + curCom);
+            }
+            ret = 0;
+        }
+    }else{
+        LOGU("Starting in GUI mode...");
+
+        QApplication a(argc, argvc_str);
+        MainWindow w;
+        w.show();
+        ret = a.exec();
+    }
+
+
+    return ret;
 }
 
 
