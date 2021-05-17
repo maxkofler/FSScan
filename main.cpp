@@ -16,7 +16,7 @@ bool switchCommand(std::string com);
 
 int main(int argc, char** argvc_str)
 {
-    hlog = new Log(Log::U, false);
+    hlog = new Log(Log::A, true);
     FUN();
 
     int ret = 0;
