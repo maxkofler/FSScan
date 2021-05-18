@@ -2,6 +2,7 @@
 
 UIMenu::UIMenu(MainWindow* win){
     FUN();
+    this->_mainwindow = win;
     this->_filemenu = win->_menubar->addMenu("Datei");
     p_createActions(win);
     p_registerSlots();

@@ -11,17 +11,25 @@ SOURCES += \
         log/log.cpp \
         log/logfunction.cpp \
         main.cpp \
+        ui/connectsignals.cpp \
         ui/mainwindow.cpp \
         ui/menu/p_createActions.cpp \
         ui/menu/p_registerSlots.cpp \
         ui/menu/p_setMenus.cpp \
-        ui/menu/private_slots/sl_cleanup_db.cpp \
-        ui/menu/private_slots/sl_delete_db.cpp \
-        ui/menu/private_slots/sl_load_db.cpp \
-        ui/menu/private_slots/sl_new_scan.cpp \
-        ui/menu/private_slots/sl_quit.cpp \
-        ui/menu/private_slots/sl_store_db.cpp \
-        ui/menu/uimenu.cpp
+        ui/menu/uimenu.cpp \
+        #MainWindow slots
+        ui/private_slots/mainwindow_sl_cleanup_db.cpp \
+        ui/private_slots/mainwindow_sl_delete_db.cpp \
+        ui/private_slots/mainwindow_sl_load_db.cpp \
+        ui/private_slots/mainwindow_sl_new_scan.cpp \
+        ui/private_slots/mainwindow_sl_store_db.cpp \
+        #UIMenu slots
+        ui/menu/private_slots/uimenu_sl_cleanup_db.cpp \
+        ui/menu/private_slots/uimenu_sl_delete_db.cpp \
+        ui/menu/private_slots/uimenu_sl_load_db.cpp \
+        ui/menu/private_slots/uimenu_sl_new_scan.cpp \
+        ui/menu/private_slots/uimenu_sl_quit.cpp \
+        ui/menu/private_slots/uimenu_sl_store_db.cpp
 
 HEADERS += \
     indexer/fsentry/fsentry.h \

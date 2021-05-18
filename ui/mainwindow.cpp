@@ -6,6 +6,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     FUN();
+
+    this->_indexer = new Indexer();
+
     ui->setupUi(this);
 
     this->_statusbar = new QStatusBar(this);
@@ -15,6 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
     setMenuBar(this->_menubar);
 
     this->_menu = new UIMenu(this);
+
+    this->_statusbar->showMessage("Starting...", 2000);
+
+    this->p_connectSignals();
 }
 
 MainWindow::~MainWindow()

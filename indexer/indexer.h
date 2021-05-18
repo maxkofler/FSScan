@@ -6,18 +6,22 @@ class Indexer;
 #include "log/log.h"
 #include "fsentry/fsentry.h"
 
+#include <QObject>
+#include <QStatusBar>
+
 #include <filesystem>
 #include <string>
 #include <vector>
 #include <ostream>
 #include <istream>
 
-class Indexer
+class Indexer : public QObject
 {
+    Q_OBJECT
 public:
     Indexer();
 
-    size_t                      indexDirRecursive(std::string path, bool delete_results);
+    size_t                      indexDirRecursive(std::string path, bool delete_results, bool printProgress, QStatusBar* bar = nullptr);
 
     size_t                      savePaths(std::ostream& stream);
     size_t                      loadPaths(std::istream& stream, bool delete_results);
@@ -41,6 +45,8 @@ public:
      */
     size_t                      clean();
 
+signals:
+    void                        onFinishedIndex();
 
 private:
     std::vector<FSEntry>        _entries;

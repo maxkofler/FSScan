@@ -5,12 +5,16 @@
 Indexer::Indexer(){
 }
 
-size_t Indexer::indexDirRecursive(std::string path, bool delete_old_results){
+size_t Indexer::indexDirRecursive(std::string path, bool delete_old_results, bool printProgress, QStatusBar* statBar){
     FUN();
     if (delete_old_results){
         this->_entries.clear();
         LOGI("Cleared all old results!");
     }
+    if (statBar != nullptr){
+        LOGD("Outputting info to statusbar");
+    }
+
     std::filesystem::path   fPath;
     std::string             sfPath;
     std::string             sfName;
@@ -20,7 +24,8 @@ size_t Indexer::indexDirRecursive(std::string path, bool delete_old_results){
     recursive_directory_iterator it(path, directory_options::skip_permission_denied);
     recursive_directory_iterator end;
 
-    LOGSP(Log::U);
+    if (printProgress)
+        LOGSP(Log::U);
     size_t curSize = 0;
 
     while(it != end){
@@ -36,7 +41,10 @@ size_t Indexer::indexDirRecursive(std::string path, bool delete_old_results){
                 if (this->_entries.size() < this->_entries.max_size()){
                     //LOGI("New file: \"" + sfPath + "\"");
                     curSize++;
-                    LOGPP("Scanned " + std::to_string(curSize) + " files...", Log::U);
+                    if (printProgress)
+                        LOGPP("Scanned " + std::to_string(curSize) + " files...", Log::U);
+                    if (statBar != nullptr && curSize % 5 == 0)
+                        statBar->showMessage(QString().fromStdString(sfPath));
                     this->_entries.push_back(FSEntry(sfName, sfPath));
                 }else{
                     LOGE("Maximum size of vector reached: " + std::to_string(this->_entries.size()));
@@ -45,7 +53,8 @@ size_t Indexer::indexDirRecursive(std::string path, bool delete_old_results){
             }
         }  catch (filesystem_error& e) {
         } catch(...){
-            LOGEP(Log::U);
+            if (printProgress)
+                LOGEP(Log::U);
             LOGE("Fatal error while scanning!");
             break;
         }
@@ -57,10 +66,16 @@ size_t Indexer::indexDirRecursive(std::string path, bool delete_old_results){
         }
 
     }
-    LOGEP(Log::U);
+    if (printProgress)
+        LOGEP(Log::U);
+    if (statBar != nullptr)
+        statBar->showMessage(QString().fromStdString("Sorting entries..."));
     LOGU("Sorting entries...");
     std::sort(this->_entries.begin(), this->_entries.end());
+    if (statBar != nullptr)
+        statBar->showMessage(QString().fromStdString("Indexed " + std::to_string(this->_entries.size()) + " files!"));
     LOGU("Done!");
+    emit onFinishedIndex();
     return this->_entries.size();
 }
 

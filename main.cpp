@@ -73,7 +73,7 @@ bool switchCommand(std::string com){
         //cout << "Enter path to scan: ";
         cin >> buf;
         LOGU("Scanning " + buf + "...");
-        size_t i = indexer.indexDirRecursive(buf, false);
+        size_t i = indexer.indexDirRecursive(buf, false, true);
         {
             string l = "Done scanning " + buf + ": " + std::to_string(i);
             l += " files (" + std::to_string(indexer.getByteSize()) + " bytes) indexed!";

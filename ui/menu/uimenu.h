@@ -19,7 +19,7 @@ public:
     UIMenu(MainWindow* win);
 
 signals:
-    void                    onNewScan();
+    void                    onNewScan(std::string directory);
     void                    onLoadDB(std::string path);
     void                    onStoreDB(std::string path);
     void                    onCleanupDB();
@@ -36,6 +36,8 @@ private slots:
 
 private:
     QMenu*                  _filemenu;
+
+    MainWindow*             _mainwindow;
 
     QAction*                _action_new_scan;
     QAction*                _action_load_db;
