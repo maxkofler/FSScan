@@ -21,9 +21,9 @@ int main(int argc, char** argvc_str)
 
     int ret = 0;
 
-    std::string argv[argc];
+    std::vector<std::string> argv;
     for(int i = 0; i < argc; i++)
-        argv[i] = std::string(argvc_str[i]);
+        argv.push_back(std::string(argvc_str[i]));
 
     bool startcli = false;
 

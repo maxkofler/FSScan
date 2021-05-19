@@ -6,8 +6,11 @@ class Log;
 
 extern Log* hlog;
 
-#define FUN() LogFunction logfun(__PRETTY_FUNCTION__, hlog)
-
+#ifdef WIN32
+    #define FUN() LogFunction logfun(__FUNCTION__, hlog)
+#else
+    #define FUN() LogFunction logfun(__PRETTY_FUNCTION__, hlog)
+#endif
 
 #define LOGUE(text) hlog->log(text, Log::UE);
 #define LOGUW(text) hlog->log(text, Log::UW);
@@ -28,11 +31,12 @@ extern Log* hlog;
 
 #include <vector>
 #include <string>
+#include <inttypes.h>
 
 class Log
 {
 public:
-    Log(uint level, bool printFunNames);
+    Log(int level, bool printFunNames);
 
     const static int UE = 1;
     const static int UW = 2;
@@ -51,21 +55,21 @@ public:
 
     void                        pop();
 
-    void                        log(std::string text, uint level);
+    void                        log(std::string text, int level);
 
-    void                        logw(std::string text, uint level);
+    void                        logw(std::string text, int level);
 
-    void                        startProgress(uint level);
+    void                        startProgress(int level);
 
-    void                        printProgress(std::string text, uint level);
+    void                        printProgress(std::string text, int level);
 
-    void                        endProgress(uint level);
+    void                        endProgress(int level);
 
     void                        flush();
 
 private:
     std::vector<LogFunction* >  _functionStack;
-    uint                        _curLevel;
+    int                         _curLevel;
 
     bool                        _inProgress;
 

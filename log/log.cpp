@@ -3,12 +3,12 @@
 #include <iostream>
 
 
-Log::Log(uint level, bool printFunNames){
+Log::Log(int level, bool printFunNames){
     this->_curLevel = level;
     this->_printFunNames = printFunNames;
 }
 
-void Log::log(std::string text, uint level){
+void Log::log(std::string text, int level){
     if (level <= _curLevel){
         std::cout.flush();
         if (this->_printFunNames){
@@ -20,7 +20,7 @@ void Log::log(std::string text, uint level){
     }
 }
 
-void Log::logw(std::string text, uint level){
+void Log::logw(std::string text, int level){
     if (level <= _curLevel){
         std::cout.flush();
         if (this->_printFunNames){
@@ -45,12 +45,12 @@ void Log::pop(){
 }
 
 
-void Log::startProgress(uint level){
+void Log::startProgress(int level){
     if (level <= _curLevel)
         this->_inProgress = true;
 }
 
-void Log::printProgress(std::string text, uint level){
+void Log::printProgress(std::string text, int level){
     if (level <= _curLevel){
         this->logw(text, level);
         std::cout << "\r";
@@ -58,7 +58,7 @@ void Log::printProgress(std::string text, uint level){
     }
 }
 
-void Log::endProgress(uint level){
+void Log::endProgress(int level){
     if (level <= _curLevel){
         std::cout << std::endl;
         this->_inProgress = false;
