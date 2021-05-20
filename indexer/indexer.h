@@ -29,6 +29,7 @@ public:
     size_t                      getByteSize();
     size_t                      getSize(){return this->_entries.size();}
 
+    std::vector<FSEntry>        getVector(){return this->_entries;}
     std::vector<FSEntry>        findByName(std::string name);
     std::vector<FSEntry>        findByExactName(std::string name);
 
@@ -46,6 +47,7 @@ public:
     size_t                      clean();
 
 signals:
+    void                        onStatusUpdate(QString text);
     void                        onFinishedIndex();
 
 private:

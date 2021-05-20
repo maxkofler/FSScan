@@ -22,6 +22,7 @@ SOURCES += \
         ui/private_slots/mainwindow_sl_delete_db.cpp \
         ui/private_slots/mainwindow_sl_load_db.cpp \
         ui/private_slots/mainwindow_sl_new_scan.cpp \
+        ui/private_slots/mainwindow_sl_postStatusUpdate.cpp \
         ui/private_slots/mainwindow_sl_store_db.cpp \
         #UIMenu slots
         ui/menu/private_slots/uimenu_sl_cleanup_db.cpp \
@@ -29,7 +30,8 @@ SOURCES += \
         ui/menu/private_slots/uimenu_sl_load_db.cpp \
         ui/menu/private_slots/uimenu_sl_new_scan.cpp \
         ui/menu/private_slots/uimenu_sl_quit.cpp \
-        ui/menu/private_slots/uimenu_sl_store_db.cpp
+        ui/menu/private_slots/uimenu_sl_store_db.cpp \
+        ui/ui_methods/refreshItemList.cpp
 
 HEADERS += \
     indexer/fsentry/fsentry.h \

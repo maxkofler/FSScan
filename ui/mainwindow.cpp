@@ -8,8 +8,16 @@ MainWindow::MainWindow(QWidget *parent) :
     FUN();
 
     this->_indexer = new Indexer();
+    this->_lv_model = nullptr;
+    this->_filterActive = false;
 
     ui->setupUi(this);
+
+    this->_le_search = ui->lineEdit;
+    this->_bt_search = ui->pushButton;
+    this->_lv_results = ui->listView;
+
+    connect(this->_lv_results, &QListView::doubleClicked, this, &MainWindow::sl_doubleClickedItem);
 
     this->_statusbar = new QStatusBar(this);
     setStatusBar(this->_statusbar);

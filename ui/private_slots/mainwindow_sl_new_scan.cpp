@@ -20,12 +20,14 @@ void MainWindow::sl_new_scan(std::string dir){
 
     //connect(this->_indexer, &Indexer::onFinishedIndex, dialog, &QProgressDialog::close);
 
+    connect(this->_indexer, &Indexer::onFinishedIndex, this, &MainWindow::sl_onFinishedScanning);
+    connect(this->_indexer, &Indexer::onStatusUpdate, this, &MainWindow::sl_postStatusUpdate);
+
     std::thread th_scan(&Indexer::indexDirRecursive, this->_indexer, dir, false, false, this->_statusbar);
     //this->_indexer->indexDirRecursive(dir, false, false);
     th_scan.detach();
 }
 
-void MainWindow::sl_statusUpdate(std::string s){
-    FUN();
-    this->_statusbar->showMessage(QString().fromStdString(s), 0);
+void MainWindow::sl_onFinishedScanning(){
+    this->refreshItemList();
 }

@@ -43,8 +43,7 @@ size_t Indexer::indexDirRecursive(std::string path, bool delete_old_results, boo
                     curSize++;
                     if (printProgress)
                         LOGPP("Scanned " + std::to_string(curSize) + " files...", Log::U);
-                    if (statBar != nullptr && curSize % 5 == 0)
-                        statBar->showMessage(QString().fromStdString(sfPath));
+                    emit onStatusUpdate(QString().fromStdString("Indexing \"" + sfPath + "\"..."));
                     this->_entries.push_back(FSEntry(sfName, sfPath));
                 }else{
                     LOGE("Maximum size of vector reached: " + std::to_string(this->_entries.size()));
@@ -68,12 +67,10 @@ size_t Indexer::indexDirRecursive(std::string path, bool delete_old_results, boo
     }
     if (printProgress)
         LOGEP(Log::U);
-    if (statBar != nullptr)
-        statBar->showMessage(QString().fromStdString("Sorting entries..."));
+    emit onStatusUpdate("Sorting entries...");
     LOGU("Sorting entries...");
     std::sort(this->_entries.begin(), this->_entries.end());
-    if (statBar != nullptr)
-        statBar->showMessage(QString().fromStdString("Indexed " + std::to_string(this->_entries.size()) + " files!"));
+    emit onStatusUpdate(QString().fromStdString("Indexed " + std::to_string(this->_entries.size()) + " files!"));
     LOGU("Done!");
     emit onFinishedIndex();
     return this->_entries.size();
